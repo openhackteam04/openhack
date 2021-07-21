@@ -55,42 +55,13 @@ RUN mkdir -p /tmp/downloads/helm \
 RUN echo 'alias k=kubectl' >> "/root/.zshrc" \
     && echo 'complete -F __start_kubectl k' >> "/root/.zshrc" \
     && echo "[[ $commands[kubectl] ]] && source <(kubectl completion zsh)" >> "/root/.zshrc"
-# echo 'source /etc/bash_completion' >> "/root/.zshrc" \
-# && echo 'source <(kubectl completion bash)' >> "/root/.zshrc" \
-# && kubectl completion bash >/etc/bash_completion.d/kubectl \
 
-# Microsoft SQL CLI
-# Import the public repository GPG keys
-# RUN curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add - \
-
-#     # Register the Microsoft Ubuntu repository
-#     && apt-add-repository https://packages.microsoft.com/ubuntu/20.04/prod \
-
-#     # Update the list of products
-#     && apt-get update \
-
-#     # Install mssql-cli
-#     && apt-get install mssql-cli \
-
-#     # Install missing dependencies
-#     && apt-get install -f
-
-
-
-# RUN echo "deb [arch=amd64] https://packages.microsoft.com/ubuntu/20.04/prod $(lsb_release -cs) main" > /etc/apt/sources.list.d/mssql-cli.list \
-#     && apt-get update \
-#     && apt-get install mssql-cli -y
-
-# # Distributor ID: Ubuntu
-# # Description:    Ubuntu 20.04.2 LTS
-# # Release:        20.04
-# # Codename:       focal
-
+# Install Sqlcmd
 RUN echo "Installing mssql-tools" \
     && curl -sSL https://packages.microsoft.com/keys/microsoft.asc | (OUT=$(apt-key add - 2>&1) || echo $OUT) \
     && DISTRO=$(lsb_release -is | tr '[:upper:]' '[:lower:]') \
     && CODENAME=$(lsb_release -cs) \
-    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-${DISTRO}-${CODENAME}-prod ${CODENAME} main" > /etc/apt/sources.list.d/microsoft.list \ 
+    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-${DISTRO}-${CODENAME}-prod ${CODENAME} main" > /etc/apt/sources.list.d/microsoft.list \
     && apt-get update \
     && ACCEPT_EULA=Y apt-get -y install unixodbc-dev msodbcsql17 libunwind8 mssql-tools
 
@@ -102,9 +73,6 @@ RUN echo "Installing sqlpackage" \
     && chmod a+x /opt/sqlpackage/sqlpackage \
     && ln -sfn /opt/mssql-tools/bin/sqlcmd /usr/bin/sqlcmd
 
-RUN docker pull mcr.microsoft.com/mssql/server:2017-latest
-
-### TODO: address gittree issues // take a look at .git/config.worktree it is hardcoded to local directory not sym linked working branch (changing to ../  resolves the problem but the system response time is slower and all files will be marked at editted on local system when you exit container @Lee?)
 # Clean up
 RUN apt-get autoremove -y \
     && apt-get clean -y \
