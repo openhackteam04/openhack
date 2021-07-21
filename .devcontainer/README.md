@@ -10,7 +10,7 @@ VS Code now supports Remote Development within Containers. You can read more abo
 * [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest)
 * [Kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)
 * [Helm](https://helm.sh/)
-* [MSSQL CLI](https://github.com/dbcli/mssql-cli)
+* [sqlcmd](https://docs.microsoft.com/en-us/sql/tools/sqlcmd-utility?view=sql-server-ver15)
 
 ## Usage
 

@@ -4,8 +4,8 @@
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
 
-# Note: You can use any Debian/Ubuntu based image you want. 
-FROM debian:9
+# Note: You can use any Debian/Ubuntu based image you want. Using the microsoft base Ubuntu image.
+FROM mcr.microsoft.com/vscode/devcontainers/base:focal
 
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
@@ -16,18 +16,10 @@ ARG COMPOSE_VERSION=1.24.0
 # Helm Version
 ARG HELM_VERSION=3.0.2
 
-# This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
-# property in devcontainer.json to use it. On Linux, the container user's GID/UIDs
-# will be updated to match your local UID/GID (when using the dockerFile property).
-# See https://aka.ms/vscode-remote/containers/non-root-user for details.
-ARG USERNAME=vscode
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-
 # Configure apt and install packages
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
-    && apt-get -y install git iproute2 procps
+    && apt-get -y install git iproute2 procps bash-completion
 
 # Install Docker CE CLI
 RUN apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common lsb-release \
@@ -41,7 +33,7 @@ RUN curl -sSL "https://github.com/docker/compose/releases/download/${COMPOSE_VER
     && chmod +x /usr/local/bin/docker-compose
 
 # Install the Azure CLI
-RUN apt-get install -y apt-transport-https curl gnupg2 lsb-release \
+RUN apt-get install -y apt-transport-https gnupg2 lsb-release \
     && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list \
     && curl -sL https://packages.microsoft.com/keys/microsoft.asc | apt-key add - 2>/dev/null \
     && apt-get update \
@@ -59,19 +51,60 @@ RUN mkdir -p /tmp/downloads/helm \
     && tar -C /tmp/downloads/helm -zxvf /tmp/downloads/helm.tar.gz \
     && mv /tmp/downloads/helm/linux-amd64/helm /usr/local/bin
 
+# Make kubectl completions work with 'k' alias
+RUN echo 'alias k=kubectl' >> "/root/.zshrc" \
+    && echo 'complete -F __start_kubectl k' >> "/root/.zshrc" \
+    && echo "[[ $commands[kubectl] ]] && source <(kubectl completion zsh)" >> "/root/.zshrc"
+# echo 'source /etc/bash_completion' >> "/root/.zshrc" \
+# && echo 'source <(kubectl completion bash)' >> "/root/.zshrc" \
+# && kubectl completion bash >/etc/bash_completion.d/kubectl \
+
 # Microsoft SQL CLI
-RUN echo "deb [arch=amd64] https://packages.microsoft.com/debian/9/prod $(lsb_release -cs) main" > /etc/apt/sources.list.d/mssql-cli.list \
+# Import the public repository GPG keys
+# RUN curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add - \
+
+#     # Register the Microsoft Ubuntu repository
+#     && apt-add-repository https://packages.microsoft.com/ubuntu/20.04/prod \
+
+#     # Update the list of products
+#     && apt-get update \
+
+#     # Install mssql-cli
+#     && apt-get install mssql-cli \
+
+#     # Install missing dependencies
+#     && apt-get install -f
+
+
+
+# RUN echo "deb [arch=amd64] https://packages.microsoft.com/ubuntu/20.04/prod $(lsb_release -cs) main" > /etc/apt/sources.list.d/mssql-cli.list \
+#     && apt-get update \
+#     && apt-get install mssql-cli -y
+
+# # Distributor ID: Ubuntu
+# # Description:    Ubuntu 20.04.2 LTS
+# # Release:        20.04
+# # Codename:       focal
+
+RUN echo "Installing mssql-tools" \
+    && curl -sSL https://packages.microsoft.com/keys/microsoft.asc | (OUT=$(apt-key add - 2>&1) || echo $OUT) \
+    && DISTRO=$(lsb_release -is | tr '[:upper:]' '[:lower:]') \
+    && CODENAME=$(lsb_release -cs) \
+    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-${DISTRO}-${CODENAME}-prod ${CODENAME} main" > /etc/apt/sources.list.d/microsoft.list \ 
     && apt-get update \
-    && apt-get install mssql-cli -y
+    && ACCEPT_EULA=Y apt-get -y install unixodbc-dev msodbcsql17 libunwind8 mssql-tools
 
-# Create a non-root user to use if preferred - see https://aka.ms/vscode-remote/containers/non-root-user.
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    # [Optional] Add sudo support for the non-root user
-    && apt-get install -y sudo \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+RUN echo "Installing sqlpackage" \
+    && curl -sSL -o sqlpackage.zip "https://aka.ms/sqlpackage-linux" \
+    && mkdir /opt/sqlpackage \
+    && unzip sqlpackage.zip -d /opt/sqlpackage \
+    && rm sqlpackage.zip \
+    && chmod a+x /opt/sqlpackage/sqlpackage \
+    && ln -sfn /opt/mssql-tools/bin/sqlcmd /usr/bin/sqlcmd
 
+RUN docker pull mcr.microsoft.com/mssql/server:2017-latest
+
+### TODO: address gittree issues // take a look at .git/config.worktree it is hardcoded to local directory not sym linked working branch (changing to ../  resolves the problem but the system response time is slower and all files will be marked at editted on local system when you exit container @Lee?)
 # Clean up
 RUN apt-get autoremove -y \
     && apt-get clean -y \
