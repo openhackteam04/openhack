@@ -32,12 +32,13 @@ RUN apt-get install -y apt-transport-https ca-certificates curl gnupg-agent soft
 RUN curl -sSL "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
     && chmod +x /usr/local/bin/docker-compose
 
-# Install the Azure CLI
+# Install the Azure CLI && aks-preview extension
 RUN apt-get install -y apt-transport-https gnupg2 lsb-release \
     && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list \
     && curl -sL https://packages.microsoft.com/keys/microsoft.asc | apt-key add - 2>/dev/null \
     && apt-get update \
-    && apt-get install -y azure-cli
+    && apt-get install -y azure-cli \
+    && az extension add -n aks-preview
 
 # Install Kubectl
 RUN echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list \
