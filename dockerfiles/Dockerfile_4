@@ -1,5 +1,5 @@
 # builder - first stage to build the application
-FROM golang:1.11.1 AS gobuild
+FROM golang:1.17.1 AS gobuild
 
 WORKDIR /go/src/app
 COPY . .
