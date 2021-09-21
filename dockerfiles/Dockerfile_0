@@ -18,8 +18,8 @@ ENV PORT=80 \
     SQL_DBNAME="mydrivingDB"
 
 # Metadata as defined in OCI image spec annotations - https://github.com/opencontainers/image-spec/blob/master/annotations.md
-LABEL org.opencontainers.image.title="Trip Insights - User Profile (Java) API" \
-      org.opencontainers.image.description="The User Profile (Java) API component forms part of the Trip Insights application." \
+LABEL org.opencontainers.image.title="Trip Insights - User (Java) API" \
+      org.opencontainers.image.description="The User (Java) API component forms part of the Trip Insights application." \
       org.opencontainers.image.created=$IMAGE_CREATE_DATE \
       org.opencontainers.image.version=$IMAGE_VERSION \
       org.opencontainers.image.authors="Microsoft" \
