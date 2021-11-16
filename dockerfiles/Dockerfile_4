@@ -1,3 +1,5 @@
+# docker build -f dockerfiles/Dockerfile_4 src/trips -t openhack-go
+
 # builder - first stage to build the application
 FROM golang:1.17.1 AS gobuild
 
@@ -35,7 +37,7 @@ LABEL org.opencontainers.image.title="Trip Insights - Trips API" \
       org.opencontainers.image.vendor="Microsoft" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://github.com/Azure-Samples/openhack-containers.git" \
-      org.opencontainers.image.revision=$IMAGE_SOURCE_REVISION 
+      org.opencontainers.image.revision=$IMAGE_SOURCE_REVISION
 
 # add debugging utilities
 RUN apk --no-cache add \

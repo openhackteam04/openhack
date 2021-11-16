@@ -1,3 +1,5 @@
+# docker build -f dockerfiles/Dockerfile_2 src/userprofile -t openhack-node
+
 FROM node:12-alpine
 
 ARG IMAGE_CREATE_DATE
@@ -22,7 +24,7 @@ LABEL org.opencontainers.image.title="Trip Insights - User Profile API" \
       org.opencontainers.image.vendor="Microsoft" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://github.com/Azure-Samples/openhack-containers.git" \
-      org.opencontainers.image.revision=$IMAGE_SOURCE_REVISION 
+      org.opencontainers.image.revision=$IMAGE_SOURCE_REVISION
 
 # add debugging utilities
 RUN apk --no-cache add \
@@ -32,7 +34,7 @@ RUN apk --no-cache add \
   less \
   vim
 
-# bundle app and install dependencies 
+# bundle app and install dependencies
 COPY . /app
 WORKDIR /app
 RUN npm install

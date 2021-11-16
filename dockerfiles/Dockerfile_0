@@ -1,4 +1,7 @@
+# docker build -f dockerfiles/Dockerfile_0 src/user-java -t openhack-java
+
 # builder - first stage to build the application
+
 FROM maven:3.5.4-jdk-11-slim AS build-env
 ADD ./pom.xml pom.xml
 ADD ./src src/
@@ -28,7 +31,7 @@ LABEL org.opencontainers.image.title="Trip Insights - User (Java) API" \
       org.opencontainers.image.vendor="Microsoft" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://github.com/Azure-Samples/openhack-containers.git" \
-      org.opencontainers.image.revision=$IMAGE_SOURCE_REVISION 
+      org.opencontainers.image.revision=$IMAGE_SOURCE_REVISION
 
 # add debugging utilities
 RUN apt-get update && apt-get install -y --no-install-recommends \
