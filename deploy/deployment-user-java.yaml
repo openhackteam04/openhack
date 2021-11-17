@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-java
+  labels:
+    app: user-java
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-java
+  template:
+    metadata:
+      labels:
+        app: user-java
+    spec:
+      containers:
+        - name: user-java
+          image: registryhtc1767.azurecr.io/tripinsights/user-java:1.0
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: sql-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-java-service
+spec:
+  selector:
+    app: user-java
+  ports:
+    - port: 80
+      targetPort: 80
