@@ -15,10 +15,15 @@ spec:
         app: tripviewer
     spec:
       containers:
-      - name: tripviewer
-        image: registryhtc1767.azurecr.io/tripinsights/tripviewer:1.0
-        ports:
-        - containerPort: 80
+        - name: tripviewer
+          image: registryhtc1767.azurecr.io/tripinsights/tripviewer:1.0
+          ports:
+            - containerPort: 80
+          env:
+            - name: USERPROFILE_API_ENDPOINT
+              value: 'http://userprofile-service'
+            - name: TRIPS_API_ENDPOINT
+              value: 'http://trips-service'
 ---
 apiVersion: v1
 kind: Service
@@ -27,6 +32,6 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
+    - port: 80
   selector:
     app: tripviewer
