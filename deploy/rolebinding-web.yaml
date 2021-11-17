@@ -4,8 +4,8 @@ metadata:
   name: view-pods
   namespace: web
 subjects:
-  - kind: User
-    name: ccd53e7a-52c8-410d-ba76-731269de23c0
+  - kind: Group
+    name: 5cfcf782-f814-49ab-a4f7-2bdf0feb7399
     apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
@@ -18,8 +18,8 @@ metadata:
   name: edit-pods
   namespace: web
 subjects:
-  - kind: User
-    name: 76ef3194-a471-4c20-84d8-eeb86b1a6416
+  - kind: Group
+    name: 2244ab2a-a025-4e48-b3e3-3e6ab1af2bed
     apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
