@@ -21,16 +21,15 @@ spec:
             - containerPort: 80
           env:
             - name: USERPROFILE_API_ENDPOINT
-              value: 'http://userprofile-service'
+              value: 'http://userprofile-service.api'
             - name: TRIPS_API_ENDPOINT
-              value: 'http://trips-service'
+              value: 'http://trips-service.api'
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: tripviewer-front
 spec:
-  type: LoadBalancer
   ports:
     - port: 80
   selector:
