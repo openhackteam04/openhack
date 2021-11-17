@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: tripinsight-api-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /api/poi
+            pathType: Prefix
+            backend:
+              serviceName: poi-service
+              servicePort: 80
+          - path: /api/trips
+            pathType: Prefix
+            backend:
+              serviceName: trips-service
+              servicePort: 80
+          - path: /api/user
+            pathType: Prefix
+            backend:
+              serviceName: userprofile-service
+              servicePort: 80
+          - path: /api/user-java
+            pathType: Prefix
+            backend:
+              serviceName: user-java-service
+              servicePort: 80
