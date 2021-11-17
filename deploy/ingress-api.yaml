@@ -13,17 +13,65 @@ spec:
             backend:
               serviceName: poi-service
               servicePort: 80
+          - path: /api/docs/poi
+            pathType: Prefix
+            backend:
+              serviceName: poi-service
+              servicePort: 80
+          - path: /swagger/docs/poi
+            pathType: Prefix
+            backend:
+              serviceName: poi-service
+              servicePort: 80
+
           - path: /api/trips
             pathType: Prefix
             backend:
               serviceName: trips-service
               servicePort: 80
+          - path: /api/docs/trips
+            pathType: Prefix
+            backend:
+              serviceName: trips-service
+              servicePort: 80
+          - path: /api/json
+            pathType: Prefix
+            backend:
+              serviceName: trips-service
+              servicePort: 80
+
           - path: /api/user
             pathType: Prefix
             backend:
               serviceName: userprofile-service
               servicePort: 80
+          - path: /api/docs/user
+            pathType: Prefix
+            backend:
+              serviceName: userprofile-service
+              servicePort: 80
+
           - path: /api/user-java
+            pathType: Prefix
+            backend:
+              serviceName: user-java-service
+              servicePort: 80
+          - path: /api/docs/user-java
+            pathType: Prefix
+            backend:
+              serviceName: user-java-service
+              servicePort: 80
+          - path: /api/documentation/user-java
+            pathType: Prefix
+            backend:
+              serviceName: user-java-service
+              servicePort: 80
+          - path: /api/swagger-resources
+            pathType: Prefix
+            backend:
+              serviceName: user-java-service
+              servicePort: 80
+          - path: /api/api-docs
             pathType: Prefix
             backend:
               serviceName: user-java-service
