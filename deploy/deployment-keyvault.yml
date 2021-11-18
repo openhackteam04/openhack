@@ -1,0 +1,30 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: azure-sync
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "true"    # Set to true for using managed identity
+    userAssignedIdentityID: "6be3a317-eebc-43a7-8d77-e845fcbb27e9"      # If empty, then defaults to use the system assigned identity on the VM
+    keyvaultName: tripinsights-vault
+    objects:  |
+      array:
+        - |
+          objectName: SQL-SERVER
+          objectAlias: SQL_SERVER
+          objectType: secret
+        - |
+          objectName: SQL-USER
+          objectAlias: SQL_USER
+          objectType: secret
+        - |
+          objectName: SQL-PASSWORD
+          objectAlias: SQL_PASSWORD
+          objectType: secret
+        - |
+          objectName: SQL-DBNAME
+          objectAlias: SQL_DBNAME
+          objectType: secret
+    tenantId: 72f1a12a-219d-4ba3-9c9b-7c0e1e34114f           # The tenant ID of the Azure Key Vault instance

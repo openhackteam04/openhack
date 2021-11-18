@@ -19,9 +19,17 @@ spec:
           image: registryhtc1767.azurecr.io/tripinsights/userprofile:1.0
           ports:
             - containerPort: 80
-          envFrom:
-            - secretRef:
-                name: sql-credentials
+          volumeMounts:
+          - name: secrets-store01-inline
+            mountPath: "/secrets"
+            readOnly: true
+      volumes:
+        - name: secrets-store01-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "azure-sync"
 ---
 apiVersion: v1
 kind: Service
