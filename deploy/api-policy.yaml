@@ -1,0 +1,12 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: api-policy
+  namespace: api
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+      - podSelector:
+            matchLabels:
+              app: tripviewer
